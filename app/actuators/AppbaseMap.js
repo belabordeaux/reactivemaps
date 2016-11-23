@@ -415,10 +415,15 @@ export class AppbaseMap extends Component {
       streamCenterFlag = false;
     }
     if(!this.searchAsMove && this.props.autoCenter && this.reposition && streamCenterFlag) {
-      searchComponentProps.center =  generatedMarkers.defaultCenter ? generatedMarkers.defaultCenter : this.state.center;
+      searchComponentProps.center =  generatedMarkers.defaultCenter ? generatedMarkers.defaultCenter : (this.storeCenter ? this.storeCenter : this.state.center);
+      this.storeCenter = searchComponentProps.center;
       this.reposition = false;
     } else {
-      delete searchComponentProps.center;
+      if(this.storeCenter) {
+        searchComponentProps.center = this.storeCenter;  
+      } else {
+        delete searchComponentProps.center;
+      }
     }
     // include searchasMove component 
     if(this.props.searchAsMoveComponent) {
@@ -447,12 +452,11 @@ export class AppbaseMap extends Component {
           }}
           {...searchComponentProps}
           {...this.props}
-          onIdle = {:: this.handleOnIdle}>
+          onIdle = {() => this.handleOnIdle()}>
           {searchComponent}
           {markerComponent}
           {this.externalData()}
       </GoogleMap>}/>
-      <div style= { Style.divStatusStyle } ref= "status" > { this.state.streamingStatus } </div >
       <div style={Style.divAppbaseStyle} >
         Powered by <img width='200px' height='auto' src="http://slashon.appbase.io/img/Appbase.png" /> 
       </div>                
@@ -489,8 +493,8 @@ AppbaseMap.defaultProps = {
   streamActiveTime: 5,
   streamAutoCenter: true,
   rotateOnUpdate: false,
-  historicPin: 'dist/images/historic-pin.png',
-  streamPin: 'dist/images/stream-pin.png',
+  historicPin: 'http://opensource.appbase.io/reactive-maps/dist/images/historic-pin.png',
+  streamPin: 'http://opensource.appbase.io/reactive-maps/dist/images/stream-pin.png',
   markerOnClick: function() {},
   markerOnDblclick: function() {},
   markerOnMouseover: function() {},
