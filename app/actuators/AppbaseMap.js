@@ -87,6 +87,7 @@ export class AppbaseMap extends Component {
 		}, function() {
 			// Pass the historic or streaming data in index method
 			res.allMarkers = rawData;
+			res.mapRef = this.refs.map;
 			let generatedData = this.props.markerOnIndex(res);
 			this.setState({
 				externalData: generatedData
@@ -434,6 +435,9 @@ export class AppbaseMap extends Component {
 				};
 			}
 		}
+		if(!this.props.allowMarkers) {
+			response.markerComponent = [];
+		}
 		return response;
 	}
 	externalData() {
@@ -534,6 +538,7 @@ AppbaseMap.propTypes = {
 	markerCluster: React.PropTypes.bool,
 	historicalData: React.PropTypes.bool,
 	rotateOnUpdate: React.PropTypes.bool,
+	allowMarkers: React.PropTypes.bool,
 	streamActiveTime: React.PropTypes.number,
 	requestSize: React.PropTypes.number
 };
@@ -551,6 +556,7 @@ AppbaseMap.defaultProps = {
 	streamActiveTime: 5,
 	streamAutoCenter: true,
 	rotateOnUpdate: false,
+	allowMarkers: true,
 	historicPin: 'http://opensource.appbase.io/reactive-maps/dist/images/historic-pin.png',
 	streamPin: 'http://opensource.appbase.io/reactive-maps/dist/images/stream-pin.png',
 	markerOnClick: function() {},
