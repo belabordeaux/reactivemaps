@@ -10,6 +10,11 @@ class Main extends Component {
 	constructor(props) {
 		super(props);
 		this.markerOnIndex = this.markerOnIndex.bind(this);
+		this.result = {
+			markers: [],
+			heatmapPoints: []
+		};
+		this.heatmap = null;
 	}
 	getGradient(temp) {
 		if(temp <= 5) {
@@ -30,37 +35,33 @@ class Main extends Component {
 	}
 	markerOnIndex(res) {
 		if (res.allMarkers && res.allMarkers.hits && res.allMarkers.hits.hits) {
-			let result = res.allMarkers.hits.hits.map((markerData, index) => {
+			if(this.heatmap) {
+				this.heatmap.getData().clear();
+			}
+			res.allMarkers.hits.hits.forEach((markerData, index) => {
 				let location = markerData._source[this.props.mapping.location];
-				return new google.maps.LatLng(location.lat, location.lon);
+				this.result.markers.forEach((result_marker, index) => {
+					if(location.lat === result_marker.lat && location.lon === result_marker.lon) {
+						this.result.markers.splice(index, 1);
+					}
+				});
+				let point = {
+					location: new google.maps.LatLng(location.lat, location.lon),
+					weight: markerData._source.main.temp
+				};
+				this.result.markers.push({lat: location.lat, lon: location.lon, weight: point.weight});
+				this.result.heatmapPoints.push(point);
+				
 			});
 			let gredient = res.allMarkers.hits.hits.map((markerData, index) => {
 				let source = markerData._source;
 				return this.getGradient(source.main.temp);
 			});
-			console.log(gredient);
-			let heatmap = new google.maps.visualization.HeatmapLayer({
-				data: result,
+			this.heatmap = new google.maps.visualization.HeatmapLayer({
+				data: this.result.heatmapPoints,
 				map: res.mapRef.props.map,
-				radius: 50
+				radius: 30
 			});
-			var gradient = [
-				'rgba(0, 255, 255, 0)',
-				'rgba(0, 255, 255, 1)',
-				'rgba(0, 191, 255, 1)',
-				'rgba(0, 127, 255, 1)',
-				'rgba(0, 63, 255, 1)',
-				'rgba(0, 0, 255, 1)',
-				'rgba(0, 0, 223, 1)',
-				'rgba(0, 0, 191, 1)',
-				'rgba(0, 0, 159, 1)',
-				'rgba(0, 0, 127, 1)',
-				'rgba(63, 0, 91, 1)',
-				'rgba(127, 0, 63, 1)',
-				'rgba(191, 0, 31, 1)',
-				'rgba(255, 0, 0, 1)'
-			];
-			heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
 		}
 	}
 	render() {
