@@ -72,13 +72,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _PlacesSearch = __webpack_require__(553);
 
-	// actuators
+	var _reactivebase = __webpack_require__(62);
+
+	var _reactivebase2 = _interopRequireDefault(_reactivebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	module.exports = {
 		ReactiveMap: _ReactiveMap.ReactiveMap,
 		GeoDistanceSlider: _GeoDistanceSlider.GeoDistanceSlider,
 		GeoDistanceDropdown: _GeoDistanceDropdown.GeoDistanceDropdown,
-		PlacesSearch: _PlacesSearch.PlacesSearch
-	};
+		PlacesSearch: _PlacesSearch.PlacesSearch,
+		reactivebase: _reactivebase2.default
+	}; // actuators
 
 /***/ },
 /* 2 */
