@@ -78,13 +78,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	module.exports = {
+	var combineObj = {
 		ReactiveMap: _ReactiveMap.ReactiveMap,
 		GeoDistanceSlider: _GeoDistanceSlider.GeoDistanceSlider,
 		GeoDistanceDropdown: _GeoDistanceDropdown.GeoDistanceDropdown,
-		PlacesSearch: _PlacesSearch.PlacesSearch,
-		reactivebase: _reactivebase2.default
+		PlacesSearch: _PlacesSearch.PlacesSearch
 	}; // actuators
+
+
+	for (var component in _reactivebase2.default) {
+		combineObj[component] = _reactivebase2.default[component];
+	}
+
+	module.exports = combineObj;
 
 /***/ },
 /* 2 */
